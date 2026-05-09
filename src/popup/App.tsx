@@ -12,17 +12,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings } from "@/components/Settings";
 import {
+  BookMarked,
+  Bookmark as BookmarkIcon,
+  Cloud,
   ExternalLink,
-  FolderTree,
-  Plus,
   RefreshCw,
   Search,
-  Sparkles,
-  Tag,
+  Settings2,
   Trash2,
+  X,
 } from "lucide-react";
 
 const lineClampStyles = {
@@ -31,16 +31,20 @@ const lineClampStyles = {
   overflow: "hidden",
 };
 
+type Section = "bookmarks" | "settings";
+
 function App() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("bookmarks");
-  const [useSemanticSearch, setUseSemanticSearch] = useState(false);
+  const [activeSection, setActiveSection] = useState<Section>("bookmarks");
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [totalBookmarks, setTotalBookmarks] = useState(0);
+
+  const mode = document.body.getAttribute("data-mode") || "drawer";
+  const isDrawer = mode === "drawer";
 
   const loadBookmarks = useCallback(
     async (uid: string) => {
@@ -51,9 +55,7 @@ function App() {
         if (selectedCategory) {
           data = await bookmarkService.getBookmarksByCategory(uid, selectedCategory);
         } else if (searchQuery.trim()) {
-          data = useSemanticSearch
-            ? await bookmarkService.semanticSearch(uid, searchQuery)
-            : await bookmarkService.searchBookmarks(uid, searchQuery);
+          data = await bookmarkService.searchBookmarks(uid, searchQuery);
         } else {
           data = await bookmarkService.getBookmarks(uid);
         }
@@ -74,7 +76,7 @@ function App() {
         setLoading(false);
       }
     },
-    [searchQuery, selectedCategory, useSemanticSearch]
+    [searchQuery, selectedCategory]
   );
 
   useEffect(() => {
@@ -144,6 +146,14 @@ function App() {
     loadBookmarks(newUserId);
   };
 
+  const handleCloseDrawer = () => {
+    if (!isDrawer) return;
+    window.parent.postMessage(
+      { source: "smart-bookmark-manager", type: "close-drawer" },
+      "*"
+    );
+  };
+
   const visibleCount = bookmarks.length;
   const categoryCount = categories.length;
   const statusText = selectedCategory
@@ -153,134 +163,93 @@ function App() {
       : "已连接云端书签库";
 
   return (
-    <div className="relative flex h-screen min-w-[600px] flex-col overflow-hidden bg-background text-foreground">
+    <div className="relative flex h-[100dvh] w-full overflow-hidden bg-[#f5efe7] text-foreground">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-[-14%] top-[-12%] h-64 w-64 rounded-full bg-[radial-gradient(circle,_rgba(231,152,114,0.26),_transparent_70%)]" />
-        <div className="absolute right-[-18%] top-[6%] h-80 w-80 rounded-full bg-[radial-gradient(circle,_rgba(79,102,112,0.22),_transparent_68%)]" />
-        <div className="absolute bottom-[-16%] left-[24%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(213,191,159,0.2),_transparent_72%)]" />
+        <div className="absolute left-[-12%] top-[-10%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(228,181,146,0.22),_transparent_72%)]" />
+        <div className="absolute bottom-[-12%] left-[28%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(154,180,181,0.18),_transparent_72%)]" />
       </div>
 
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        className="relative z-10 flex h-full flex-col"
-      >
-        <div className="border-b border-white/40 bg-white/70 px-5 pb-5 pt-5 backdrop-blur-xl">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <Badge
-                variant="outline"
-                className="border-white/70 bg-white/60 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-[#6d554a]"
-              >
-                Smart Bookmark Cloud
-              </Badge>
-              <div>
-                <h1 className="font-[family:var(--font-display)] text-[30px] leading-none text-[#2b221d]">
+      <main className="relative z-10 flex min-w-0 flex-1 flex-col border-r border-[#e7ddd2] bg-[rgba(255,252,247,0.92)]">
+        <header className="border-b border-[#eee4d8] px-4 pb-3 pt-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[linear-gradient(180deg,#355e66,#21434a)] text-white shadow-[0_12px_20px_rgba(53,94,102,0.18)]">
+                <BookmarkIcon className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-[17px] font-semibold tracking-[-0.03em] text-[#1f2625]">
                   智能书签管理器
                 </h1>
-                <p className="mt-2 max-w-[360px] text-sm leading-6 text-[#6c6059]">
-                  为你的收藏做一次真正的整理，让同步、筛选和搜索都变得顺手。
+                <p className="mt-0.5 text-[11px] text-[#6f6b65]">
+                  {totalBookmarks} 条书签 · {categoryCount} 个分类
                 </p>
               </div>
             </div>
 
-            <div className="grid min-w-[170px] grid-cols-2 gap-2 rounded-[24px] border border-white/60 bg-[#fffaf4]/80 p-3 shadow-[0_18px_50px_rgba(78,52,35,0.08)]">
-              <div className="rounded-[18px] bg-white/80 p-3">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-[#9d8473]">
-                  Total
-                </p>
-                <p className="mt-2 font-[family:var(--font-display)] text-2xl text-[#2c241e]">
-                  {totalBookmarks}
-                </p>
-              </div>
-              <div className="rounded-[18px] bg-[#f3e5d7]/80 p-3">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-[#8b654f]">
-                  分类
-                </p>
-                <p className="mt-2 font-[family:var(--font-display)] text-2xl text-[#3b2a21]">
-                  {categoryCount}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5">
-            <TabsList className="grid h-auto w-full grid-cols-2 rounded-[18px] border border-white/60 bg-[#f7efe6]/80 p-1.5">
-              <TabsTrigger
-                value="bookmarks"
-                className="rounded-[14px] py-2.5 text-sm data-[state=active]:bg-white"
+            {isDrawer && (
+              <button
+                type="button"
+                onClick={handleCloseDrawer}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-white text-[#645e59] shadow-[0_8px_18px_rgba(88,70,52,0.07)] transition-colors hover:bg-[#faf4ed]"
+                title="关闭"
               >
-                书签库
-              </TabsTrigger>
-              <TabsTrigger
-                value="settings"
-                className="rounded-[14px] py-2.5 text-sm data-[state=active]:bg-white"
-              >
-                设置
-              </TabsTrigger>
-            </TabsList>
+                <X className="h-4.5 w-4.5" />
+              </button>
+            )}
           </div>
-        </div>
+        </header>
 
-        <TabsContent value="bookmarks" className="mt-0 flex-1 overflow-hidden">
-          <div className="flex h-full flex-col gap-4 px-5 pb-5 pt-4">
-            <Card className="overflow-hidden rounded-[28px] border-white/60 bg-[linear-gradient(135deg,rgba(255,249,241,0.95),rgba(245,233,219,0.82))] shadow-[0_24px_80px_rgba(82,57,39,0.1)]">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
+        {activeSection === "bookmarks" ? (
+          <section className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-3">
+            <Card className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none">
+              <CardContent className="space-y-2.5 p-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative min-w-0 flex-1">
+                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8c877f]" />
+                    <Input
+                      type="text"
+                      placeholder="搜索标题、链接或描述..."
+                      value={searchQuery}
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                      className="h-10 rounded-[14px] border-none bg-white pl-11 text-sm shadow-none placeholder:text-[#a09a94] focus-visible:ring-2 focus-visible:ring-[#355e66]/15"
+                    />
+                  </div>
                   <Button
                     onClick={handleSync}
                     disabled={loading}
-                    className="h-11 flex-1 rounded-[18px] bg-[#2e5d66] text-[#f7f3ed] shadow-[0_12px_30px_rgba(46,93,102,0.24)] hover:bg-[#254e55]"
+                    className="h-10 shrink-0 rounded-[14px] bg-[#355e66] px-4 text-white shadow-[0_10px_24px_rgba(53,94,102,0.18)] hover:bg-[#2a4f56]"
                   >
                     <RefreshCw
                       className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
                     />
-                    同步书签
-                  </Button>
-                  <Button
-                    onClick={() => setUseSemanticSearch(!useSemanticSearch)}
-                    variant="outline"
-                    className={`h-11 rounded-[18px] border-none px-4 ${
-                      useSemanticSearch
-                        ? "bg-[#e58c64] text-white hover:bg-[#d97f56]"
-                        : "bg-white/75 text-[#5f5148] hover:bg-white"
-                    }`}
-                    title="切换语义搜索"
-                  >
-                    <Sparkles className="h-4 w-4" />
+                    同步
                   </Button>
                 </div>
 
-                <div className="mt-4 rounded-[22px] border border-white/70 bg-white/75 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a786f]" />
-                    <Input
-                      type="text"
-                      placeholder={useSemanticSearch ? "语义搜索书签..." : "搜索标题、链接或描述..."}
-                      value={searchQuery}
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      className="h-12 rounded-[18px] border-none bg-[#f7f1ea] pl-11 text-sm shadow-none placeholder:text-[#9b8a81] focus-visible:ring-1"
-                    />
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[#7c6d64]">
-                    <span>{statusText}</span>
-                    <span>{useSemanticSearch ? "语义模式" : "文本模式"}</span>
+                <div className="flex items-center justify-between gap-3 text-[12px] text-[#76706a]">
+                  <span>{statusText}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#6f6b65]">
+                      已展示 {visibleCount}
+                    </span>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#6f6b65]">
+                      分类 {categoryCount}
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {categories.length > 0 && (
-              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hidden">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setSelectedCategory(null)}
-                  className={`shrink-0 rounded-full border-none px-4 ${
+                  className={`h-9 shrink-0 rounded-full border-none px-4 ${
                     selectedCategory === null
-                      ? "bg-[#2f5d66] text-white hover:bg-[#284f57]"
-                      : "bg-white/70 text-[#6e5f56] hover:bg-white"
+                      ? "bg-[#355e66] text-white hover:bg-[#2a4f56]"
+                      : "bg-[#f0ebe4] text-[#6e6963] hover:bg-[#eae4dc]"
                   }`}
                 >
                   全部
@@ -294,10 +263,10 @@ function App() {
                       setSelectedCategory(category);
                       setSearchQuery("");
                     }}
-                    className={`shrink-0 rounded-full border-none px-4 ${
+                    className={`h-9 shrink-0 rounded-full border-none px-4 ${
                       selectedCategory === category
-                        ? "bg-[#e58c64] text-white hover:bg-[#d97f56]"
-                        : "bg-[#f7efe6] text-[#6f6158] hover:bg-white"
+                        ? "bg-[#355e66] text-white hover:bg-[#2a4f56]"
+                        : "bg-[#f0ebe4] text-[#6e6963] hover:bg-[#eae4dc]"
                     }`}
                   >
                     {category}
@@ -306,212 +275,187 @@ function App() {
               </div>
             )}
 
-            <div className="grid grid-cols-3 gap-3">
-              <Card className="rounded-[24px] border-white/60 bg-white/70 shadow-[0_16px_40px_rgba(90,66,48,0.08)]">
-                <CardContent className="flex items-center gap-3 p-4">
-                  <div className="rounded-2xl bg-[#f1dfd2] p-2.5 text-[#855947]">
-                    <FolderTree className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-[#9c8575]">
-                      已展示
-                    </p>
-                    <p className="mt-1 text-lg font-semibold text-[#2e2722]">
-                      {visibleCount}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="rounded-[24px] border-white/60 bg-white/70 shadow-[0_16px_40px_rgba(90,66,48,0.08)]">
-                <CardContent className="flex items-center gap-3 p-4">
-                  <div className="rounded-2xl bg-[#dde7e7] p-2.5 text-[#2f5d66]">
-                    <Tag className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-[#9c8575]">
-                      分类数
-                    </p>
-                    <p className="mt-1 text-lg font-semibold text-[#2e2722]">
-                      {categoryCount}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="rounded-[24px] border-white/60 bg-white/70 shadow-[0_16px_40px_rgba(90,66,48,0.08)]">
-                <CardContent className="flex items-center gap-3 p-4">
-                  <div className="rounded-2xl bg-[#f3eadc] p-2.5 text-[#8f6f3c]">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-[#9c8575]">
-                      搜索模式
-                    </p>
-                    <p className="mt-1 text-lg font-semibold text-[#2e2722]">
-                      {useSemanticSearch ? "语义" : "文本"}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <div className="mt-3 flex min-h-0 flex-1 flex-col">
               {loading && bookmarks.length === 0 ? (
-                <div className="flex h-full items-center justify-center rounded-[28px] border border-white/55 bg-white/60">
-                  <RefreshCw className="h-6 w-6 animate-spin text-[#7d6f67]" />
+                <div className="flex h-full items-center justify-center rounded-[26px] bg-[#f6f0e8]">
+                  <RefreshCw className="h-6 w-6 animate-spin text-[#8d887f]" />
                 </div>
               ) : bookmarks.length === 0 ? (
-                <Card className="flex h-full flex-col items-center justify-center rounded-[32px] border-dashed border-white/70 bg-white/55 px-8 text-center shadow-[0_18px_50px_rgba(95,70,55,0.06)]">
-                  <CardContent className="py-12">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f0dfd1] text-[#8b5948]">
-                      <Plus className="h-6 w-6" />
+                <Card className="flex h-full flex-col items-center justify-center rounded-[26px] border-none bg-[#f6f0e8] text-center shadow-none">
+                  <CardContent className="px-8 py-12">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[20px] bg-white text-[#9b948b]">
+                      <BookmarkIcon className="h-7 w-7" />
                     </div>
-                    <h2 className="mt-5 font-[family:var(--font-display)] text-2xl text-[#2b231f]">
-                      {searchQuery ? "没有找到匹配结果" : "先把书签同步进来"}
+                    <h2 className="mt-5 text-[19px] font-semibold tracking-[-0.03em] text-[#292521]">
+                      {searchQuery ? "没有找到匹配结果" : "暂无书签内容"}
                     </h2>
-                    <p className="mx-auto mt-3 max-w-[320px] text-sm leading-6 text-[#75675f]">
+                    <p className="mx-auto mt-3 max-w-[260px] text-sm leading-6 text-[#7a746d]">
                       {searchQuery
-                        ? "可以试试更短的关键词，或者切换到另一种搜索模式。"
-                        : "从 Chrome 一键导入后，这里会成为你的云端书签工作台。"}
+                        ? "可以试试更短的关键词，或者切换到其他分类查看。"
+                        : "同步 Chrome 书签后，这里会成为你的收藏整理抽屉。"}
                     </p>
-                    {!searchQuery && (
-                      <Button
-                        onClick={handleSync}
-                        disabled={loading}
-                        className="mt-6 rounded-[18px] bg-[#2e5d66] px-5 text-white hover:bg-[#254e55]"
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        同步 Chrome 书签
-                      </Button>
-                    )}
                   </CardContent>
                 </Card>
               ) : (
-                <div className="space-y-3 pb-1">
-                  {bookmarks.map((bookmark) => {
-                    const hostname = (() => {
-                      try {
-                        return new URL(bookmark.url).hostname.replace(/^www\./, "");
-                      } catch {
-                        return bookmark.url;
-                      }
-                    })();
+                <div className="min-h-0 flex-1 overflow-y-auto pr-1 scrollbar-hidden">
+                  <div className="space-y-3 pb-2">
+                    {bookmarks.map((bookmark) => {
+                      const hostname = (() => {
+                        try {
+                          return new URL(bookmark.url).hostname.replace(/^www\./, "");
+                        } catch {
+                          return bookmark.url;
+                        }
+                      })();
 
-                    return (
-                      <Card
-                        key={bookmark.id}
-                        className="overflow-hidden rounded-[28px] border-white/60 bg-white/72 shadow-[0_20px_55px_rgba(90,64,47,0.09)] backdrop-blur-sm transition-transform duration-200 hover:-translate-y-0.5"
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex min-w-0 flex-1 items-start gap-3">
-                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[18px] bg-[#f4e4d6]">
-                                {bookmark.favicon ? (
-                                  <img
-                                    src={bookmark.favicon}
-                                    alt=""
-                                    className="h-5 w-5"
-                                    onError={(event) => {
-                                      (event.target as HTMLImageElement).style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span className="text-sm font-semibold uppercase text-[#915f4d]">
-                                    {hostname.slice(0, 1)}
-                                  </span>
-                                )}
-                              </div>
+                      return (
+                        <Card
+                          key={bookmark.id}
+                          className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none transition-transform duration-200 hover:-translate-y-0.5"
+                        >
+                          <CardHeader className="p-3.5 pb-2">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex min-w-0 flex-1 items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-white text-[#8c877f]">
+                                  {bookmark.favicon ? (
+                                    <img
+                                      src={bookmark.favicon}
+                                      alt=""
+                                      className="h-5 w-5"
+                                      onError={(event) => {
+                                        (event.target as HTMLImageElement).style.display = "none";
+                                      }}
+                                    />
+                                  ) : (
+                                    <span className="text-sm font-semibold uppercase text-[#355e66]">
+                                      {hostname.slice(0, 1)}
+                                    </span>
+                                  )}
+                                </div>
 
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2">
+                                <div className="min-w-0 flex-1">
                                   <CardTitle
-                                    className="text-[17px] leading-6 text-[#2c241f]"
+                                    className="text-[15px] leading-6 text-[#282521]"
                                     style={{ ...lineClampStyles, WebkitLineClamp: 1 }}
                                   >
                                     {bookmark.title}
                                   </CardTitle>
-                                  <Badge
-                                    variant="outline"
-                                    className="hidden rounded-full border-none bg-[#eef2f2] px-2.5 py-1 text-[10px] uppercase tracking-[0.2em] text-[#52727a] sm:inline-flex"
+                                  <CardDescription
+                                    className="mt-0.5 text-xs text-[#7b756e]"
+                                    style={{ ...lineClampStyles, WebkitLineClamp: 1 }}
                                   >
-                                    {hostname}
-                                  </Badge>
+                                    {bookmark.url}
+                                  </CardDescription>
+                                  {bookmark.description && (
+                                    <p
+                                      className="mt-2 text-sm leading-6 text-[#67615a]"
+                                      style={{ ...lineClampStyles, WebkitLineClamp: 2 }}
+                                    >
+                                      {bookmark.description}
+                                    </p>
+                                  )}
                                 </div>
-                                <CardDescription
-                                  className="mt-1 text-xs text-[#7c6d64]"
-                                  style={{ ...lineClampStyles, WebkitLineClamp: 1 }}
+                              </div>
+
+                              <div className="flex shrink-0 gap-2">
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() => handleOpenBookmark(bookmark.url)}
+                                  title="打开链接"
+                                  className="h-9 w-9 rounded-full bg-white text-[#65615b] hover:bg-[#efe8df]"
                                 >
-                                  {bookmark.url}
-                                </CardDescription>
-                                {bookmark.description && (
-                                  <p
-                                    className="mt-2 text-sm leading-6 text-[#62564f]"
-                                    style={{ ...lineClampStyles, WebkitLineClamp: 2 }}
-                                  >
-                                    {bookmark.description}
-                                  </p>
-                                )}
+                                  <ExternalLink className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() => handleDelete(bookmark.id!)}
+                                  title="删除"
+                                  className="h-9 w-9 rounded-full bg-white text-[#b8665f] hover:bg-[#faece8]"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
                               </div>
                             </div>
+                          </CardHeader>
 
-                            <div className="flex shrink-0 gap-2">
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => handleOpenBookmark(bookmark.url)}
-                                title="打开链接"
-                                className="h-10 w-10 rounded-full bg-[#f7efe7] text-[#5a514c] hover:bg-[#ece0d5]"
-                              >
-                                <ExternalLink className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => handleDelete(bookmark.id!)}
-                                title="删除"
-                                className="h-10 w-10 rounded-full bg-[#fbefea] text-[#b85d4b] hover:bg-[#f7dfd7]"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
+                          <CardContent className="px-3.5 pb-3.5 pt-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {bookmark.category && (
+                                <Badge className="rounded-full border-none bg-white px-3 py-1 text-[#355e66] hover:bg-white">
+                                  {bookmark.category}
+                                </Badge>
+                              )}
+                              {bookmark.tags?.map((tag, index) => (
+                                <Badge
+                                  key={`${bookmark.id}-${tag}-${index}`}
+                                  variant="outline"
+                                  className="rounded-full border-none bg-[#ece4da] px-3 py-1 text-[#76706a]"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {bookmark.visit_count !== undefined && bookmark.visit_count > 0 && (
+                                <span className="text-xs text-[#84807a]">
+                                  访问 {bookmark.visit_count} 次
+                                </span>
+                              )}
                             </div>
-                          </div>
-                        </CardHeader>
-
-                        <CardContent className="pt-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            {bookmark.category && (
-                              <Badge className="rounded-full bg-[#2f5d66] px-3 py-1 text-white hover:bg-[#2f5d66]">
-                                {bookmark.category}
-                              </Badge>
-                            )}
-                            {bookmark.tags?.map((tag, index) => (
-                              <Badge
-                                key={`${bookmark.id}-${tag}-${index}`}
-                                variant="outline"
-                                className="rounded-full border-none bg-[#efe7de] px-3 py-1 text-[#6c5d53]"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {bookmark.visit_count !== undefined && bookmark.visit_count > 0 && (
-                              <span className="text-xs text-[#81736a]">
-                                访问 {bookmark.visit_count} 次
-                              </span>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
+          </section>
+        ) : (
+          <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hidden">
+            <Settings userId={userId} onUserIdChange={handleUserIdChange} />
           </div>
-        </TabsContent>
+        )}
+      </main>
 
-        <TabsContent value="settings" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-          <Settings userId={userId} onUserIdChange={handleUserIdChange} />
-        </TabsContent>
-      </Tabs>
+      <aside className="relative z-10 flex w-[64px] shrink-0 flex-col items-center gap-3 border-l border-white/40 bg-[rgba(244,236,226,0.9)] px-2.5 py-4">
+        <button
+          type="button"
+          onClick={() => setActiveSection("bookmarks")}
+          className={`flex h-11 w-11 items-center justify-center rounded-[15px] transition-colors ${
+            activeSection === "bookmarks"
+              ? "bg-white text-[#355e66] shadow-[0_10px_22px_rgba(88,70,52,0.08)]"
+              : "bg-[#ede4d9] text-[#7c766f] hover:bg-white"
+          }`}
+          title="书签库"
+        >
+          <BookMarked className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveSection("settings")}
+          className={`flex h-11 w-11 items-center justify-center rounded-[15px] transition-colors ${
+            activeSection === "settings"
+              ? "bg-white text-[#355e66] shadow-[0_10px_22px_rgba(88,70,52,0.08)]"
+              : "bg-[#ede4d9] text-[#7c766f] hover:bg-white"
+          }`}
+          title="设置"
+        >
+          <Settings2 className="h-5 w-5" />
+        </button>
+
+        <div className="flex h-11 w-11 items-center justify-center rounded-[15px] bg-[#ede4d9] text-[#7c766f]">
+          <Cloud className="h-5 w-5" />
+        </div>
+
+        <div className="mt-auto w-full rounded-[16px] bg-white/75 px-2 py-2.5 text-center shadow-[0_10px_18px_rgba(88,70,52,0.06)]">
+          <p className="text-[10px] text-[#847d76]">当前</p>
+          <p className="mt-1 text-base font-semibold leading-none tracking-[-0.03em] text-[#2a2621]">
+            {visibleCount}
+          </p>
+        </div>
+      </aside>
     </div>
   );
 }

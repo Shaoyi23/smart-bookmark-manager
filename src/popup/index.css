@@ -4,99 +4,107 @@
 
 @layer base {
   :root {
-    --background: 28 43% 94%;
-    --foreground: 24 19% 16%;
-    --card: 36 52% 97%;
-    --card-foreground: 24 19% 16%;
-    --popover: 32 49% 97%;
-    --popover-foreground: 24 19% 16%;
-    --primary: 191 36% 29%;
-    --primary-foreground: 40 43% 96%;
-    --secondary: 28 34% 89%;
-    --secondary-foreground: 24 16% 24%;
-    --muted: 30 31% 91%;
-    --muted-foreground: 24 11% 42%;
-    --accent: 19 69% 64%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 10 56% 55%;
+    --background: 258 100% 98%;
+    --foreground: 224 17% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 17% 18%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 17% 18%;
+    --primary: 258 100% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 260 57% 96%;
+    --secondary-foreground: 227 12% 34%;
+    --muted: 260 44% 97%;
+    --muted-foreground: 226 11% 54%;
+    --accent: 313 84% 82%;
+    --accent-foreground: 224 17% 18%;
+    --destructive: 0 72% 62%;
     --destructive-foreground: 0 0% 100%;
-    --border: 32 32% 84%;
-    --input: 32 29% 86%;
-    --ring: 191 36% 35%;
-    --radius: 1.35rem;
-    --chart-1: 19 69% 64%;
-    --chart-2: 191 36% 35%;
-    --chart-3: 36 34% 58%;
-    --chart-4: 27 41% 72%;
-    --chart-5: 13 36% 48%;
-    --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-    --font-ui: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    --border: 260 45% 92%;
+    --input: 260 40% 91%;
+    --ring: 258 100% 62%;
+    --radius: 1.25rem;
+    --font-display: "SF Pro Display", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    --font-ui: "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
 
   html,
   body,
   #root {
-    height: 100%;
     width: 100%;
-    min-width: 600px;
+    height: 100%;
+    min-height: 100dvh;
+    overflow: hidden;
   }
 
   html {
-    background:
-      radial-gradient(circle at top, rgba(229, 140, 100, 0.14), transparent 30%),
-      linear-gradient(180deg, #f8f1e9 0%, #f3ece4 100%);
+    background: #f6f1ff;
   }
 
   body {
     @apply bg-background text-foreground;
     margin: 0;
     padding: 0;
-    min-width: 600px;
+    min-width: 0;
     font-family: var(--font-ui);
-    background:
-      radial-gradient(circle at top left, rgba(229, 140, 100, 0.12), transparent 28%),
-      radial-gradient(circle at top right, rgba(47, 93, 102, 0.08), transparent 32%),
-      linear-gradient(180deg, #f8f1e9 0%, #f3ece4 100%);
+    background: #f6f1ff;
   }
 }
 
-body::-webkit-scrollbar,
-.scrollbar-thin::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-body::-webkit-scrollbar-thumb,
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(120, 96, 80, 0.28);
-  border-radius: 999px;
-}
-
-body::-webkit-scrollbar-track,
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-body {
-  min-width: 600px !important;
-}
-
 body[data-mode="popup"] {
-  width: 600px !important;
-  min-width: 600px !important;
+  width: 430px !important;
+  min-width: 430px !important;
+  height: 820px !important;
+  max-height: 820px !important;
+}
+
+body[data-mode="popup"] #root {
+  width: 430px !important;
+  min-width: 430px !important;
+  height: 820px !important;
+  max-height: 820px !important;
+}
+
+body[data-mode="drawer"] {
+  width: 100% !important;
+  min-width: 380px !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+}
+
+body[data-mode="drawer"] #root {
+  width: 100% !important;
+  min-width: 380px !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
 }
 
 body[data-mode="sidepanel"] {
   width: 100% !important;
-  min-width: 600px !important;
+  min-width: 380px !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
 }
 
-body:not([data-mode]) {
-  min-width: 600px !important;
+body[data-mode="sidepanel"] #root {
+  width: 100% !important;
+  min-width: 380px !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+}
+
+.scrollbar-hidden {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
