@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    --background: 258 100% 98%;
-    --foreground: 224 17% 18%;
+    --background: 36 29% 96%;
+    --foreground: 32 14% 15%;
     --card: 0 0% 100%;
-    --card-foreground: 224 17% 18%;
+    --card-foreground: 32 14% 15%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 17% 18%;
-    --primary: 258 100% 62%;
+    --popover-foreground: 32 14% 15%;
+    --primary: 191 31% 30%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 260 57% 96%;
-    --secondary-foreground: 227 12% 34%;
-    --muted: 260 44% 97%;
-    --muted-foreground: 226 11% 54%;
-    --accent: 313 84% 82%;
-    --accent-foreground: 224 17% 18%;
+    --secondary: 35 37% 92%;
+    --secondary-foreground: 26 13% 30%;
+    --muted: 36 32% 94%;
+    --muted-foreground: 28 10% 44%;
+    --accent: 25 45% 86%;
+    --accent-foreground: 32 14% 15%;
     --destructive: 0 72% 62%;
     --destructive-foreground: 0 0% 100%;
-    --border: 260 45% 92%;
-    --input: 260 40% 91%;
-    --ring: 258 100% 62%;
-    --radius: 1.25rem;
+    --border: 35 26% 86%;
+    --input: 34 24% 88%;
+    --ring: 191 31% 30%;
+    --radius: 0.75rem;
     --font-display: "SF Pro Display", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
     --font-ui: "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
   }
@@ -43,7 +43,7 @@
   }
 
   html {
-    background: #f6f1ff;
+    background: #f2ede6;
   }
 
   body {
@@ -52,7 +52,7 @@
     padding: 0;
     min-width: 0;
     font-family: var(--font-ui);
-    background: #f6f1ff;
+    background: #f2ede6;
   }
 }
 

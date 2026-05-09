@@ -163,26 +163,22 @@ function App() {
       : "已连接云端书签库";
 
   return (
-    <div className="relative flex h-[100dvh] w-full overflow-hidden bg-[#f5efe7] text-foreground">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-[-12%] top-[-10%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(228,181,146,0.22),_transparent_72%)]" />
-        <div className="absolute bottom-[-12%] left-[28%] h-72 w-72 rounded-full bg-[radial-gradient(circle,_rgba(154,180,181,0.18),_transparent_72%)]" />
-      </div>
-
-      <main className="relative z-10 flex min-w-0 flex-1 flex-col border-r border-[#e7ddd2] bg-[rgba(255,252,247,0.92)]">
-        <header className="border-b border-[#eee4d8] px-4 pb-3 pt-4">
+    <div className="relative flex h-[100dvh] w-full overflow-hidden bg-[#f2ede6] text-foreground">
+      <main className="relative z-10 flex min-w-0 flex-1 flex-col border-r border-[#e3dbd0] bg-[#fbf8f3]">
+        <header className="border-b border-[#e8e0d5] px-4 py-3">
           <div className="flex items-center justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-[14px] bg-[linear-gradient(180deg,#355e66,#21434a)] text-white shadow-[0_12px_20px_rgba(53,94,102,0.18)]">
-                <BookmarkIcon className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#355e66] text-white">
+                <BookmarkIcon className="h-4.5 w-4.5" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-[17px] font-semibold tracking-[-0.03em] text-[#1f2625]">
+                <h1 className="text-[16px] font-semibold text-[#1f2625]">
                   智能书签管理器
                 </h1>
-                <p className="mt-0.5 text-[11px] text-[#6f6b65]">
-                  {totalBookmarks} 条书签 · {categoryCount} 个分类
-                </p>
+                <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-[#6f6b65]">
+                  <span className="bg-[#f2ece4] px-2 py-0.5">{totalBookmarks} 条书签</span>
+                  <span className="bg-[#f2ece4] px-2 py-0.5">{categoryCount} 个分类</span>
+                </div>
               </div>
             </div>
 
@@ -190,7 +186,7 @@ function App() {
               <button
                 type="button"
                 onClick={handleCloseDrawer}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-white text-[#645e59] shadow-[0_8px_18px_rgba(88,70,52,0.07)] transition-colors hover:bg-[#faf4ed]"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border border-[#e6ddd2] bg-[#f7f2ea] text-[#645e59] transition-colors hover:bg-[#f0e9df]"
                 title="关闭"
               >
                 <X className="h-4.5 w-4.5" />
@@ -200,45 +196,36 @@ function App() {
         </header>
 
         {activeSection === "bookmarks" ? (
-          <section className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-3">
-            <Card className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none">
-              <CardContent className="space-y-2.5 p-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="relative min-w-0 flex-1">
-                    <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8c877f]" />
-                    <Input
-                      type="text"
-                      placeholder="搜索标题、链接或描述..."
-                      value={searchQuery}
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      className="h-10 rounded-[14px] border-none bg-white pl-11 text-sm shadow-none placeholder:text-[#a09a94] focus-visible:ring-2 focus-visible:ring-[#355e66]/15"
-                    />
-                  </div>
-                  <Button
-                    onClick={handleSync}
-                    disabled={loading}
-                    className="h-10 shrink-0 rounded-[14px] bg-[#355e66] px-4 text-white shadow-[0_10px_24px_rgba(53,94,102,0.18)] hover:bg-[#2a4f56]"
-                  >
-                    <RefreshCw
-                      className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
-                    />
-                    同步
-                  </Button>
+          <section className="flex min-h-0 flex-1 flex-col px-4 pb-4 pt-2.5">
+            <div className="border-b border-[#ece3d8] pb-3">
+              <div className="flex items-center gap-2">
+                <div className="relative min-w-0 flex-1">
+                  <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8c877f]" />
+                  <Input
+                    type="text"
+                    placeholder="搜索标题、链接或描述..."
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    className="h-10 rounded-[10px] border border-[#e4dbd0] bg-[#f7f2ea] pl-10 text-sm shadow-none placeholder:text-[#a09a94] focus-visible:ring-2 focus-visible:ring-[#355e66]/10"
+                  />
                 </div>
+                <Button
+                  onClick={handleSync}
+                  disabled={loading}
+                  className="h-10 shrink-0 rounded-[10px] bg-[#355e66] px-4 text-white hover:bg-[#2a4f56]"
+                >
+                  <RefreshCw
+                    className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+                  />
+                  同步
+                </Button>
+              </div>
 
-                <div className="flex items-center justify-between gap-3 text-[12px] text-[#76706a]">
-                  <span>{statusText}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#6f6b65]">
-                      已展示 {visibleCount}
-                    </span>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] text-[#6f6b65]">
-                      分类 {categoryCount}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+              <div className="mt-2 flex items-center justify-between gap-3 text-[12px] text-[#76706a]">
+                <span className="truncate">{statusText}</span>
+                <span className="shrink-0 text-[#8a837c]">显示 {visibleCount}</span>
+              </div>
+            </div>
 
             {categories.length > 0 && (
               <div className="mt-3 flex gap-2 overflow-x-auto pb-1 scrollbar-hidden">
@@ -246,10 +233,10 @@ function App() {
                   variant="outline"
                   size="sm"
                   onClick={() => setSelectedCategory(null)}
-                  className={`h-9 shrink-0 rounded-full border-none px-4 ${
+                  className={`h-8 shrink-0 rounded-[10px] border px-3.5 ${
                     selectedCategory === null
-                      ? "bg-[#355e66] text-white hover:bg-[#2a4f56]"
-                      : "bg-[#f0ebe4] text-[#6e6963] hover:bg-[#eae4dc]"
+                      ? "border-[#355e66] bg-[#355e66] text-white hover:bg-[#2a4f56]"
+                      : "border-[#e2d9ce] bg-[#f4eee6] text-[#6e6963] hover:bg-[#ebe4da]"
                   }`}
                 >
                   全部
@@ -263,10 +250,10 @@ function App() {
                       setSelectedCategory(category);
                       setSearchQuery("");
                     }}
-                    className={`h-9 shrink-0 rounded-full border-none px-4 ${
+                    className={`h-8 shrink-0 rounded-[10px] border px-3.5 ${
                       selectedCategory === category
-                        ? "bg-[#355e66] text-white hover:bg-[#2a4f56]"
-                        : "bg-[#f0ebe4] text-[#6e6963] hover:bg-[#eae4dc]"
+                        ? "border-[#355e66] bg-[#355e66] text-white hover:bg-[#2a4f56]"
+                        : "border-[#e2d9ce] bg-[#f4eee6] text-[#6e6963] hover:bg-[#ebe4da]"
                     }`}
                   >
                     {category}
@@ -277,19 +264,19 @@ function App() {
 
             <div className="mt-3 flex min-h-0 flex-1 flex-col">
               {loading && bookmarks.length === 0 ? (
-                <div className="flex h-full items-center justify-center rounded-[26px] bg-[#f6f0e8]">
+                <div className="flex h-full items-center justify-center border border-[#ece3d8] bg-[#f5efe7]">
                   <RefreshCw className="h-6 w-6 animate-spin text-[#8d887f]" />
                 </div>
               ) : bookmarks.length === 0 ? (
-                <Card className="flex h-full flex-col items-center justify-center rounded-[26px] border-none bg-[#f6f0e8] text-center shadow-none">
-                  <CardContent className="px-8 py-12">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[20px] bg-white text-[#9b948b]">
-                      <BookmarkIcon className="h-7 w-7" />
+                <Card className="flex h-full flex-col items-center justify-center border border-[#ece3d8] bg-[#f5efe7] text-center shadow-none">
+                  <CardContent className="px-8 py-10">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center bg-white text-[#9b948b]">
+                      <BookmarkIcon className="h-6 w-6" />
                     </div>
-                    <h2 className="mt-5 text-[19px] font-semibold tracking-[-0.03em] text-[#292521]">
+                    <h2 className="mt-4 text-[18px] font-semibold text-[#292521]">
                       {searchQuery ? "没有找到匹配结果" : "暂无书签内容"}
                     </h2>
-                    <p className="mx-auto mt-3 max-w-[260px] text-sm leading-6 text-[#7a746d]">
+                    <p className="mx-auto mt-2 max-w-[260px] text-sm leading-6 text-[#7a746d]">
                       {searchQuery
                         ? "可以试试更短的关键词，或者切换到其他分类查看。"
                         : "同步 Chrome 书签后，这里会成为你的收藏整理抽屉。"}
@@ -298,7 +285,7 @@ function App() {
                 </Card>
               ) : (
                 <div className="min-h-0 flex-1 overflow-y-auto pr-1 scrollbar-hidden">
-                  <div className="space-y-3 pb-2">
+                  <div className="space-y-2.5 pb-2">
                     {bookmarks.map((bookmark) => {
                       const hostname = (() => {
                         try {
@@ -311,17 +298,17 @@ function App() {
                       return (
                         <Card
                           key={bookmark.id}
-                          className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none transition-transform duration-200 hover:-translate-y-0.5"
+                          className="border border-[#ebe2d7] bg-[#f7f2ea] shadow-none transition-colors duration-200 hover:bg-[#f4eee6]"
                         >
-                          <CardHeader className="p-3.5 pb-2">
+                          <CardHeader className="p-3 pb-2">
                             <div className="flex items-start justify-between gap-3">
                               <div className="flex min-w-0 flex-1 items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-white text-[#8c877f]">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-white text-[#8c877f]">
                                   {bookmark.favicon ? (
                                     <img
                                       src={bookmark.favicon}
                                       alt=""
-                                      className="h-5 w-5"
+                                      className="h-4.5 w-4.5"
                                       onError={(event) => {
                                         (event.target as HTMLImageElement).style.display = "none";
                                       }}
@@ -335,20 +322,20 @@ function App() {
 
                                 <div className="min-w-0 flex-1">
                                   <CardTitle
-                                    className="text-[15px] leading-6 text-[#282521]"
+                                    className="text-[14px] leading-5 text-[#282521]"
                                     style={{ ...lineClampStyles, WebkitLineClamp: 1 }}
                                   >
                                     {bookmark.title}
                                   </CardTitle>
                                   <CardDescription
-                                    className="mt-0.5 text-xs text-[#7b756e]"
+                                    className="mt-0.5 text-[12px] text-[#7b756e]"
                                     style={{ ...lineClampStyles, WebkitLineClamp: 1 }}
                                   >
                                     {bookmark.url}
                                   </CardDescription>
                                   {bookmark.description && (
                                     <p
-                                      className="mt-2 text-sm leading-6 text-[#67615a]"
+                                      className="mt-1.5 text-[13px] leading-5 text-[#67615a]"
                                       style={{ ...lineClampStyles, WebkitLineClamp: 2 }}
                                     >
                                       {bookmark.description}
@@ -357,13 +344,13 @@ function App() {
                                 </div>
                               </div>
 
-                              <div className="flex shrink-0 gap-2">
+                              <div className="flex shrink-0 gap-1.5">
                                 <Button
                                   size="icon"
                                   variant="ghost"
                                   onClick={() => handleOpenBookmark(bookmark.url)}
                                   title="打开链接"
-                                  className="h-9 w-9 rounded-full bg-white text-[#65615b] hover:bg-[#efe8df]"
+                                  className="h-8 w-8 rounded-[10px] bg-white text-[#65615b] hover:bg-[#efe8df]"
                                 >
                                   <ExternalLink className="h-4 w-4" />
                                 </Button>
@@ -372,7 +359,7 @@ function App() {
                                   variant="ghost"
                                   onClick={() => handleDelete(bookmark.id!)}
                                   title="删除"
-                                  className="h-9 w-9 rounded-full bg-white text-[#b8665f] hover:bg-[#faece8]"
+                                  className="h-8 w-8 rounded-[10px] bg-white text-[#b8665f] hover:bg-[#faece8]"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </Button>
@@ -380,10 +367,10 @@ function App() {
                             </div>
                           </CardHeader>
 
-                          <CardContent className="px-3.5 pb-3.5 pt-0">
-                            <div className="flex flex-wrap items-center gap-2">
+                          <CardContent className="px-3 pb-3 pt-0">
+                            <div className="flex flex-wrap items-center gap-1.5">
                               {bookmark.category && (
-                                <Badge className="rounded-full border-none bg-white px-3 py-1 text-[#355e66] hover:bg-white">
+                                <Badge className="rounded-[8px] border-none bg-white px-2.5 py-1 text-[#355e66] hover:bg-white">
                                   {bookmark.category}
                                 </Badge>
                               )}
@@ -391,13 +378,13 @@ function App() {
                                 <Badge
                                   key={`${bookmark.id}-${tag}-${index}`}
                                   variant="outline"
-                                  className="rounded-full border-none bg-[#ece4da] px-3 py-1 text-[#76706a]"
+                                  className="rounded-[8px] border-none bg-[#ece4da] px-2.5 py-1 text-[#76706a]"
                                 >
                                   {tag}
                                 </Badge>
                               ))}
                               {bookmark.visit_count !== undefined && bookmark.visit_count > 0 && (
-                                <span className="text-xs text-[#84807a]">
+                                <span className="text-[12px] text-[#84807a]">
                                   访问 {bookmark.visit_count} 次
                                 </span>
                               )}
@@ -418,40 +405,40 @@ function App() {
         )}
       </main>
 
-      <aside className="relative z-10 flex w-[64px] shrink-0 flex-col items-center gap-3 border-l border-white/40 bg-[rgba(244,236,226,0.9)] px-2.5 py-4">
+      <aside className="relative z-10 flex w-[56px] shrink-0 flex-col items-center gap-2.5 border-l border-[#e3dbd0] bg-[#efe8df] px-2 py-3">
         <button
           type="button"
           onClick={() => setActiveSection("bookmarks")}
-          className={`flex h-11 w-11 items-center justify-center rounded-[15px] transition-colors ${
+          className={`flex h-10 w-10 items-center justify-center rounded-[10px] transition-colors ${
             activeSection === "bookmarks"
-              ? "bg-white text-[#355e66] shadow-[0_10px_22px_rgba(88,70,52,0.08)]"
-              : "bg-[#ede4d9] text-[#7c766f] hover:bg-white"
+              ? "bg-white text-[#355e66] shadow-sm"
+              : "bg-[#e6ddcf] text-[#7c766f] hover:bg-white"
           }`}
           title="书签库"
         >
-          <BookMarked className="h-5 w-5" />
+          <BookMarked className="h-[18px] w-[18px]" />
         </button>
 
         <button
           type="button"
           onClick={() => setActiveSection("settings")}
-          className={`flex h-11 w-11 items-center justify-center rounded-[15px] transition-colors ${
+          className={`flex h-10 w-10 items-center justify-center rounded-[10px] transition-colors ${
             activeSection === "settings"
-              ? "bg-white text-[#355e66] shadow-[0_10px_22px_rgba(88,70,52,0.08)]"
-              : "bg-[#ede4d9] text-[#7c766f] hover:bg-white"
+              ? "bg-white text-[#355e66] shadow-sm"
+              : "bg-[#e6ddcf] text-[#7c766f] hover:bg-white"
           }`}
           title="设置"
         >
-          <Settings2 className="h-5 w-5" />
+          <Settings2 className="h-[18px] w-[18px]" />
         </button>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-[15px] bg-[#ede4d9] text-[#7c766f]">
-          <Cloud className="h-5 w-5" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#e6ddcf] text-[#7c766f]">
+          <Cloud className="h-[18px] w-[18px]" />
         </div>
 
-        <div className="mt-auto w-full rounded-[16px] bg-white/75 px-2 py-2.5 text-center shadow-[0_10px_18px_rgba(88,70,52,0.06)]">
+        <div className="mt-auto w-full bg-[#f8f4ee] px-2 py-2 text-center">
           <p className="text-[10px] text-[#847d76]">当前</p>
-          <p className="mt-1 text-base font-semibold leading-none tracking-[-0.03em] text-[#2a2621]">
+          <p className="mt-1 text-[15px] font-semibold leading-none text-[#2a2621]">
             {visibleCount}
           </p>
         </div>

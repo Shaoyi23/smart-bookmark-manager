@@ -122,20 +122,20 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
   const currentIdentity = user?.email || userId || "未生成";
 
   return (
-    <div className="p-4">
+    <div className="p-3.5">
       <div className="space-y-3">
-        <Card className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none">
-          <CardContent className="p-4">
+        <Card className="border border-[#ebe2d7] bg-[#f5efe7] shadow-none">
+          <CardContent className="p-3.5">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 className="text-[18px] font-semibold tracking-[-0.03em] text-[#282521]">
+                <h2 className="text-[16px] font-semibold text-[#282521]">
                   设置与身份
                 </h2>
-                <p className="mt-1.5 text-[12px] leading-5 text-[#756f68]">
+                <p className="mt-1 text-[12px] leading-5 text-[#756f68]">
                   管理当前账号和同步方式
                 </p>
               </div>
-              <div className="rounded-[16px] bg-white px-3 py-2 text-right">
+              <div className="bg-white px-3 py-2 text-right">
                 <p className="text-[10px] text-[#8b847d]">当前身份</p>
                 <p className="mt-1 max-w-[138px] break-all text-[12px] leading-5 text-[#3e372f]">
                   {currentIdentity}
@@ -146,15 +146,13 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
         </Card>
 
         <div className="grid grid-cols-2 gap-3">
-          <Card className="rounded-[18px] border-none bg-[#f6f0e8] shadow-none">
-            <CardContent className="flex items-center gap-3 p-3.5">
-              <div className="rounded-[14px] bg-[#e0ebea] p-2.5 text-[#355e66]">
+          <Card className="border border-[#ebe2d7] bg-[#f5efe7] shadow-none">
+            <CardContent className="flex items-center gap-3 p-3">
+              <div className="bg-[#e0ebea] p-2 text-[#355e66]">
                 <Cloud className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[11px] text-[#8a837c]">
-                  同步状态
-                </p>
+                <p className="text-[11px] text-[#8a837c]">同步状态</p>
                 <p className="mt-1 text-sm font-semibold text-[#2f2a24]">
                   {user ? "已登录云端" : "本地匿名模式"}
                 </p>
@@ -162,15 +160,13 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[18px] border-none bg-[#f6f0e8] shadow-none">
-            <CardContent className="flex items-center gap-3 p-3.5">
-              <div className="rounded-[14px] bg-[#f1e1d4] p-2.5 text-[#9c674f]">
+          <Card className="border border-[#ebe2d7] bg-[#f5efe7] shadow-none">
+            <CardContent className="flex items-center gap-3 p-3">
+              <div className="bg-[#f1e1d4] p-2 text-[#9c674f]">
                 <ShieldCheck className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[11px] text-[#8a837c]">
-                  数据归属
-                </p>
+                <p className="text-[11px] text-[#8a837c]">数据归属</p>
                 <p className="mt-1 text-sm font-semibold text-[#2f2a24]">
                   {user ? "账号隔离" : "本机标识隔离"}
                 </p>
@@ -179,9 +175,9 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
           </Card>
         </div>
 
-        <Card className="rounded-[20px] border-none bg-[#f6f0e8] shadow-none">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-[17px] text-[#2f251f]">
+        <Card className="border border-[#ebe2d7] bg-[#f5efe7] shadow-none">
+          <CardHeader className="pb-2.5">
+            <CardTitle className="flex items-center gap-2 text-[16px] text-[#2f251f]">
               <User className="h-4.5 w-4.5 text-[#855948]" />
               账户
             </CardTitle>
@@ -195,15 +191,13 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
           <CardContent className="space-y-4">
             {user ? (
               <div className="space-y-4">
-                <div className="rounded-[18px] bg-white p-3.5">
+                <div className="bg-white p-3">
                   <div className="flex items-center gap-3">
-                    <div className="rounded-[14px] bg-[#f8f2eb] p-2.5 text-[#8c5e4c]">
+                    <div className="bg-[#f8f2eb] p-2 text-[#8c5e4c]">
                       <Mail className="h-4 w-4" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-[11px] text-[#8a837c]">
-                        Email
-                      </p>
+                      <p className="text-[11px] text-[#8a837c]">Email</p>
                       <p className="mt-1 break-all text-sm text-[#352b25]">
                         {user.email}
                       </p>
@@ -215,7 +209,7 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
                   onClick={handleSignOut}
                   disabled={loading}
                   variant="outline"
-                  className="h-10 w-full rounded-[14px] border-none bg-[#fbefea] text-[#b25d4b] hover:bg-[#f6e0d8]"
+                  className="h-10 w-full rounded-[10px] border-none bg-[#fbefea] text-[#b25d4b] hover:bg-[#f6e0d8]"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   登出
@@ -223,11 +217,11 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2 rounded-[16px] bg-[#efe6dc] p-1">
+                <div className="grid grid-cols-2 gap-2 bg-[#ece2d7] p-1">
                   <Button
                     variant="ghost"
                     onClick={() => setIsSignUp(false)}
-                    className={`h-10 rounded-[12px] ${
+                    className={`h-10 rounded-[10px] ${
                       !isSignUp
                         ? "bg-white text-[#2d251f] shadow-sm hover:bg-white"
                         : "text-[#7d6e66] hover:bg-white/70"
@@ -238,7 +232,7 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
                   <Button
                     variant="ghost"
                     onClick={() => setIsSignUp(true)}
-                    className={`h-10 rounded-[12px] ${
+                    className={`h-10 rounded-[10px] ${
                       isSignUp
                         ? "bg-white text-[#2d251f] shadow-sm hover:bg-white"
                         : "text-[#7d6e66] hover:bg-white/70"
@@ -256,7 +250,7 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
                       placeholder="your@email.com"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
-                      className="h-10 rounded-[14px] border-none bg-white shadow-none placeholder:text-[#9f8b7d]"
+                      className="h-10 rounded-[10px] border-none bg-white shadow-none placeholder:text-[#9f8b7d]"
                     />
                   </div>
 
@@ -267,14 +261,14 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
                       placeholder="至少 6 位"
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
-                      className="h-10 rounded-[14px] border-none bg-white shadow-none placeholder:text-[#9f8b7d]"
+                      className="h-10 rounded-[10px] border-none bg-white shadow-none placeholder:text-[#9f8b7d]"
                     />
                   </div>
 
                   <Button
                     onClick={isSignUp ? handleSignUp : handleSignIn}
                     disabled={loading || !email || !password}
-                    className="h-10 w-full rounded-[14px] bg-[#355e66] text-white hover:bg-[#2a4f56]"
+                    className="h-10 w-full rounded-[10px] bg-[#355e66] text-white hover:bg-[#2a4f56]"
                   >
                     <LogIn className="mr-2 h-4 w-4" />
                     {isSignUp ? "创建账号" : "登录账号"}
@@ -285,8 +279,8 @@ export function Settings({ userId, onUserIdChange }: SettingsProps) {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[18px] border-none bg-[#f6f0e8] shadow-none">
-          <CardHeader className="pb-3">
+        <Card className="border border-[#ebe2d7] bg-[#f5efe7] shadow-none">
+          <CardHeader className="pb-2.5">
             <CardTitle className="flex items-center gap-2 text-[16px] text-[#2f251f]">
               <BookKey className="h-4.5 w-4.5 text-[#9c674f]" />
               关于
