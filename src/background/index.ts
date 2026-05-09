@@ -40,11 +40,10 @@ chrome.bookmarks.onCreated.addListener((_id, bookmark) => {
   // 可以在这里自动同步到Supabase
 })
 
-chrome.bookmarks.onRemoved.addListener((id, _removeInfo) => {
+chrome.bookmarks.onRemoved.addListener((id) => {
   console.log('书签已删除:', id)
 })
 
 chrome.bookmarks.onChanged.addListener((id, changeInfo) => {
   console.log('书签已更新:', id, changeInfo)
 })
-
